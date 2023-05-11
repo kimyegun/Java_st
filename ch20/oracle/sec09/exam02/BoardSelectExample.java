@@ -3,12 +3,12 @@ package ch20.oracle.sec09.exam02;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import oracle.sql.BLOB;
 
 public class BoardSelectExample {
 	public static void main(String[] args) {
@@ -32,12 +32,12 @@ public class BoardSelectExample {
 		"WHERE bwriter=?";
 		
 		//PreparedStatement 얻기 및 값 지정
-		PreparesStatement pstmt = conn.prepareStatement(sql);
+		PreparedStatement pstmt = conn.prepareStatement(sql);
 		pstmt.setString(1,"winter");
 		
 		//SQL 문 실행 후, ResultSet을 통해 데이터 읽기
 		ResultSet rs = pstmt.executeQuery();
-		while(rx.next()) {
+		while(rs.next()) {
 		//데이터 행을 읽고 Board 객체 생성
 		Board board = new Board();
 		board.setBno(rs.getInt("bno"));
@@ -46,13 +46,13 @@ public class BoardSelectExample {
 		board.setBwriter(rs.getString("bwriter"));
 		board.setBdate(rs.getDate("bdate"));
 		board.setBfilename(rs.getString("bfilename"));
-		board.setBfiledata(rs.getString("bfiledata"));
+		board.setBfiledata(rs.getBlob("bfiledata"));
 		
 		//콘솔에 출력
 		System.out.println(board);
 		
 		//파일로 저장
-		BLOB blob = board.getBfiledata();
+		Blob blob = board.getBfiledata();
 		if(blob != null) {
 			InputStream is = blob.getBinaryStream();
 			OutputStream os = new FileOutputStream("C:/Temp/"+

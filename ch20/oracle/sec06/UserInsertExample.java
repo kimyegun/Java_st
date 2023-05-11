@@ -20,7 +20,7 @@ public class UserInsertExample {
 					);
 			//매개변수화된 SQL 문 작성
 			String sql = "" +
-			"INSERT INTO users (userid, username, userpassword, userage,useremail)"
+			"INSERT INTO users (userid, username, userpassword, userage, useremail)"
 					+ "VALUES (?,?,?,?,?)";
 			
 			//PreparedStatement 얻기 및 값 지정

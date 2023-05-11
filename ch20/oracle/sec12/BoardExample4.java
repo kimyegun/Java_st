@@ -9,13 +9,13 @@ import java.util.Scanner;
 
 import ch20.oracle.sec09.exam02.Board;
 
-public class BoardExample3 {
+public class BoardExample4 {
 	//Field
 	private Scanner scanner = new Scanner(System.in);
 	private Connection conn;
 	
 	//Constructor
-	public BoardExample3() {
+	public BoardExample4() {
 		try {
 			//JDBC Driver 등록
 			Class.forName("oracle.jdbc.OracleDriver");
@@ -90,7 +90,40 @@ public class BoardExample3 {
 	}	
 	
 	public void create() {
-		System.out.println("*** create() 메소드 실행됨");
+		//입력 받기
+		Board board = new Board();
+		System.out.println("[새 게시물 입력]");
+		System.out.print("제목: "); 	
+		board.setBtitle(scanner.nextLine());
+		System.out.print("내용: "); 	
+		board.setBcontent(scanner.nextLine());
+		System.out.print("작성자: "); 	
+		board.setBwriter(scanner.nextLine());
+		
+		//보조 메뉴 출력
+		System.out.println("-----------------------------------------------------------------------");
+		System.out.println("보조 메뉴: 1.Ok | 2.Cancel");
+		System.out.print("메뉴 선택: ");
+		String menuNo = scanner.nextLine();
+		if(menuNo.equals("1")) {
+			//boards 테이블에 게시물 정보 저장
+			try {
+				String sql = "" +
+					"INSERT INTO boards (bno, btitle, bcontent, bwriter, bdate) " +
+					"VALUES (SEQ_BNO.NEXTVAL, ?, ?, ?, SYSDATE)";
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, board.getBtitle());
+				pstmt.setString(2, board.getBcontent());
+				pstmt.setString(3, board.getBwriter());
+				pstmt.executeUpdate();
+				pstmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				exit();
+			}
+		}
+		
+		//게시물 목록 출력
 		list();
 	}
 	
@@ -109,7 +142,7 @@ public class BoardExample3 {
 	}
 	
 	public static void main(String[] args) {
-		BoardExample3 boardExample = new BoardExample3();
+		BoardExample4 boardExample = new BoardExample4();
 		boardExample.list();
 	}
 }
